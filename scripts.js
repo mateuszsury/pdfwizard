@@ -17,6 +17,9 @@ let removePdfFile = null;
 let convertPdfFile = null;
 let compressPdfFile = null;
 
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+
+
 // Skrypty JavaScript do przekierowywania do podstron
 document.querySelector('.tab[href="/pdfwizard/combine.html"]').addEventListener('click', function(e) {
     e.preventDefault();
@@ -266,3 +269,5 @@ async function compressPDF() {
         errorMessage.textContent = 'An error occurred while compressing the file. Please try again.';
     }
 }
+
+
