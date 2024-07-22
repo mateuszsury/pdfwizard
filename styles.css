@@ -1,0 +1,255 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #f0f2f5;
+    --text-color: #333;
+    --card-background: #fff;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1, h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.tab {
+    padding: 12px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 30px;
+    margin: 5px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.tab:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.tab.active {
+    background-color: var(--secondary-color);
+}
+
+.tab-content {
+    display: none;
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 20px auto;
+    padding: 15px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.file-label:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#file-list, #pdf-info {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 20px auto 0 auto;
+    padding: 15px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+#convert-button, #compress-button, #merge-button, #remove-page-button {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#error-message {
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+input[type="number"], select, input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+input[type="number"]:focus, select:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .tab {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+footer {
+    background-color: var(--background-color);
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+
+.terms-of-use {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.terms-of-use h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.terms-of-use p {
+    margin-bottom: 10px;
+}
+
+.terms-of-use ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.terms-of-use ul li {
+    margin-bottom: 10px;
+}
+
+.other-tools {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.other-tools .tab {
+    padding: 12px 24px;
+    background-color: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 30px;
+    margin: 5px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.other-tools .tab:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.other-tools .tab.active {
+    background-color: var(--primary-color);
+}
