@@ -19,43 +19,6 @@ let compressPdfFile = null;
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
 
-
-// Skrypty JavaScript do przekierowywania do podstron
-document.querySelector('.tab[href="/pdfwizard/combine.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/pdfwizard/combine.html';
-});
-
-document.querySelector('.tab[href="/pdfwizard/remove_pages.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/pdfwizard/remove_pages.html';
-});
-
-document.querySelector('.tab[href="/pdfwizard/convert.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/pdfwizard/convert.html';
-});
-
-document.querySelector('.tab[href="/pdfwizard/compress.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/pdfwizard/compress.html';
-});
-
-document.querySelector('.tab[href="/calculate.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/calculate.html';
-});
-
-document.querySelector('.tab[href="/edit_pictures.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/edit_pictures.html';
-});
-
-document.querySelector('.tab[href="/youtube_downloader.html"]').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = '/youtube_downloader.html';
-});
-
 if (mergeFileInput) {
     mergeFileInput.addEventListener('change', (e) => {
         mergeFiles = Array.from(e.target.files);
@@ -270,4 +233,17 @@ async function compressPDF() {
     }
 }
 
+// Cookie Consent Banner Script
+document.addEventListener('DOMContentLoaded', function() {
+    var cookieConsent = document.getElementById('cookieConsent');
+    var acceptCookies = document.getElementById('acceptCookies');
 
+    if (!localStorage.getItem('cookiesAccepted')) {
+        cookieConsent.style.display = 'block';
+    }
+
+    acceptCookies.addEventListener('click', function() {
+        localStorage.setItem('cookiesAccepted', 'true');
+        cookieConsent.style.display = 'none';
+    });
+});
