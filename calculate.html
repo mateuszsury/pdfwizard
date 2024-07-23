@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaawansowany kalkulator matematyczny</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+        }
+        #sidebar {
+            width: 250px;
+            background-color: #f1f1f1;
+            height: 100%;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .tab:hover {
+            background-color: #ddd;
+        }
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        input, select, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+        }
+        .example {
+            font-size: 0.9em;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div class="tab active" onclick="showTab('basic-math')">Podstawowe operacje</div>
+        <div class="tab" onclick="showTab('advanced-math')">Zaawansowane operacje</div>
+        <div class="tab" onclick="showTab('calculus')">Rachunek różniczkowy i całkowy</div>
+        <div class="tab" onclick="showTab('linear-algebra')">Algebra liniowa</div>
+        <div class="tab" onclick="showTab('statistics')">Statystyka</div>
+        <div class="tab" onclick="showTab('geometry')">Geometria</div>
+        <div class="tab" onclick="showTab('number-theory')">Teoria liczb</div>
+        <div class="tab" onclick="showTab('cryptography')">Kryptografia</div>
+        <div class="tab" onclick="showTab('differential-equations')">Równania różniczkowe</div>
+        <div class="tab" onclick="showTab('complex-numbers')">Liczby zespolone</div>
+        <div class="tab" onclick="showTab('physics')">Fizyka</div>
+        <div class="tab" onclick="showTab('chemistry')">Chemia</div>
+    </div>
+
+    <div id="content">
+        <!-- Podstawowe operacje -->
+        <div id="basic-math">
+            <h2>Podstawowe operacje</h2>
+            <input type="text" id="basic-math-input" placeholder="Wprowadź wyrażenie matematyczne" oninput="calculateBasicMath()">
+            <div id="basic-math-result" class="result"></div>
+        </div>
+
+        <!-- Zaawansowane operacje -->
+        <div id="advanced-math" class="hidden">
+            <h2>Zaawansowane operacje</h2>
+            <select id="advanced-math-operation">
+                <option value="factorial">Silnia</option>
+                <option value="gcd">Największy wspólny dzielnik</option>
+                <option value="lcm">Najmniejsza wspólna wielokrotność</option>
+                <option value="prime-factorization">Rozkład na czynniki pierwsze</option>
+                <option value="fibonacci">Ciąg Fibonacciego</option>
+            </select>
+            <input type="text" id="advanced-math-input" placeholder="Wprowadź liczby oddzielone przecinkami" oninput="calculateAdvancedMath()">
+            <div id="advanced-math-result" class="result"></div>
+        </div>
+
+        <!-- Rachunek różniczkowy i całkowy -->
+        <div id="calculus" class="hidden">
+            <h2>Rachunek różniczkowy i całkowy</h2>
+            <select id="calculus-operation">
+                <option value="derivative">Pochodna</option>
+                <option value="integral">Całka nieoznaczona</option>
+                <option value="definite-integral">Całka oznaczona</option>
+                <option value="limit">Granica</option>
+                <option value="taylor-series">Szereg Taylora</option>
+            </select>
+            <input type="text" id="calculus-input" placeholder="Wprowadź funkcję" oninput="calculateCalculus()">
+            <input type="text" id="calculus-params" placeholder="Dodatkowe parametry (jeśli wymagane)" oninput="calculateCalculus()">
+            <div id="calculus-result" class="result"></div>
+        </div>
+
+        <!-- Algebra liniowa -->
+        <div id="linear-algebra" class="hidden">
+            <h2>Algebra liniowa</h2>
+            <select id="linear-algebra-operation">
+                <option value="determinant">Wyznacznik</option>
+                <option value="inverse">Macierz odwrotna</option>
+                <option value="eigenvalues">Wartości własne</option>
+                <option value="eigenvectors">Wektory własne</option>
+                <option value="rank">Rząd macierzy</option>
+            </select>
+            <textarea id="linear-algebra-input" rows="4" placeholder="Wprowadź macierz (wiersze oddzielone enterem, elementy spacjami)" oninput="calculateLinearAlgebra()"></textarea>
+            <div id="linear-algebra-result" class="result"></div>
+        </div>
+
+        <!-- Statystyka -->
+        <div id="statistics" class="hidden">
+            <h2>Statystyka</h2>
+            <select id="statistics-operation">
+                <option value="mean">Średnia</option>
+                <option value="median">Mediana</option>
+                <option value="mode">Dominanta</option>
+                <option value="standard-deviation">Odchylenie standardowe</option>
+                <option value="correlation">Korelacja</option>
+            </select>
+            <input type="text" id="statistics-input" placeholder="Wprowadź dane oddzielone przecinkami" oninput="calculateStatistics()">
+            <div id="statistics-result" class="result"></div>
+        </div>
+
+        <!-- Geometria -->
+        <div id="geometry" class="hidden">
+            <h2>Geometria</h2>
+            <select id="geometry-operation">
+                <option value="circle-area">Pole koła</option>
+                <option value="sphere-volume">Objętość kuli</option>
+                <option value="triangle-area">Pole trójkąta</option>
+                <option value="pythagorean-theorem">Twierdzenie Pitagorasa</option>
+                <option value="distance-2d">Odległość między punktami 2D</option>
+            </select>
+            <input type="text" id="geometry-input" placeholder="Wprowadź parametry oddzielone przecinkami" oninput="calculateGeometry()">
+            <div id="geometry-result" class="result"></div>
+        </div>
+
+        <!-- Teoria liczb -->
+        <div id="number-theory" class="hidden">
+            <h2>Teoria liczb</h2>
+            <select id="number-theory-operation">
+                <option value="is-prime">Czy liczba pierwsza</option>
+                <option value="prime-factors">Czynniki pierwsze</option>
+                <option value="euler-totient">Funkcja Eulera</option>
+                <option value="modular-exponentiation">Potęgowanie modularne</option>
+                <option value="extended-euclidean">Rozszerzony algorytm Euklidesa</option>
+            </select>
+            <input type="text" id="number-theory-input" placeholder="Wprowadź liczbę lub liczby oddzielone przecinkami" oninput="calculateNumberTheory()">
+            <div id="number-theory-result" class="result"></div>
+        </div>
+
+        <!-- Kryptografia -->
+        <div id="cryptography" class="hidden">
+            <h2>Kryptografia</h2>
+            <select id="cryptography-operation">
+                <option value="caesar-cipher">Szyfr Cezara</option>
+                <option value="vigenere-cipher">Szyfr Vigenère'a</option>
+                <option value="rsa-encrypt">Szyfrowanie RSA (uproszczone)</option>
+                <option value="rsa-decrypt">Deszyfrowanie RSA (uproszczone)</option>
+                <option value="hash-md5">Hash MD5</option>
+            </select>
+            <input type="text" id="cryptography-input" placeholder="Wprowadź tekst" oninput="calculateCryptography()">
+            <input type="text" id="cryptography-key" placeholder="Klucz (jeśli wymagany)" oninput="calculateCryptography()">
+            <div id="cryptography-result" class="result"></div>
+        </div>
+
+        <!-- Równania różniczkowe -->
+        <div id="differential-equations" class="hidden">
+            <h2>Równania różniczkowe</h2>
+            <select id="differential-equations-operation">
+                <option value="first-order-linear">Liniowe pierwszego rzędu</option>
+                <option value="second-order-linear">Liniowe drugiego rzędu</option>
+                <option value="euler-method">Metoda Eulera</option>
+                <option value="runge-kutta">Metoda Rungego-Kutty</option>
+            </select>
+            <input type="text" id="differential-equations-input" placeholder="Wprowadź równanie" oninput="calculateDifferentialEquations()">
+            <input type="text" id="differential-equations-params" placeholder="Parametry (jeśli wymagane)" oninput="calculateDifferentialEquations()">
+            <div id="differential-equations-result" class="result"></div>
+        </div>
+
+        <!-- Liczby zespolone -->
+        <div id="complex-numbers" class="hidden">
+            <h2>Liczby zespolone</h2>
+            <select id="complex-numbers-operation">
+                <option value="add">Dodawanie</option>
+                <option value="subtract">Odejmowanie</option>
+                <option value="multiply">Mnożenie</option>
+                <option value="divide">Dzielenie</option>
+                <option value="conjugate">Sprzężenie</option>
+            </select>
+            <input type="text" id="complex-numbers-input1" placeholder="Pierwsza liczba zespolona (a+bi)" oninput="calculateComplexNumbers()">
+            <input type="text" id="complex-numbers-input2" placeholder="Druga liczba zespolona (c+di)" oninput="calculateComplexNumbers()">
+            <div id="complex-numbers-result" class="result"></div>
+        </div>
+
+        <!-- Fizyka -->
+        <div id="physics" class="hidden">
+            <h2>Fizyka</h2>
+            <select id="physics-operation">
+                <option value="kinematics">Kinematyka</option>
+                <option value="dynamics">Dynamika</option>
+                <option value="energy">Energia</option>
+                <option value="thermodynamics">Termodynamika</option>
+                <option value="electricity">Elektryczność</option>
+                <option value="optics">Optyka</option>
+                <option value="waves">Fale</option>
+            </select>
+            <div class="example">Przykład danych: "distance, 10, 2"</div>
+            <input type="text" id="physics-input" placeholder="Wprowadź dane" oninput="calculatePhysics()">
+            <div id="physics-result" class="result"></div>
+        </div>
+
+        <!-- Chemia -->
+        <div id="chemistry" class="hidden">
+            <h2>Chemia</h2>
+            <select id="chemistry-operation">
+                <option value="solution-mixing">Mieszanie roztworów</option>
+                <option value="concentration-calculation">Obliczanie stężeń</option>
+                <option value="molar-mass">Obliczanie masy molowej</option>
+                <option value="stoichiometry">Stechiometria</option>
+                <option value="ph-calculation">Obliczanie pH</option>
+            </select>
+            <div class="example">Przykład danych: "H2O"</div>
+            <input type="text" id="chemistry-input" placeholder="Wprowadź dane" oninput="calculateChemistry()">
+            <div id="chemistry-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('#content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function calculateBasicMath() {
+            const input = document.getElementById('basic-math-input').value;
+            const resultElement = document.getElementById('basic-math-result');
+            try {
+                const result = math.evaluate(input);
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateAdvancedMath() {
+            const operation = document.getElementById('advanced-math-operation').value;
+            const input = document.getElementById('advanced-math-input').value.split(',').map(Number);
+            const resultElement = document.getElementById('advanced-math-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'factorial':
+                        result = math.factorial(input[0]);
+                        break;
+                    case 'gcd':
+                        result = math.gcd(...input);
+                        break;
+                    case 'lcm':
+                        result = math.lcm(...input);
+                        break;
+                    case 'prime-factorization':
+                        result = primeFactors(input[0]).join(' * ');
+                        break;
+                    case 'fibonacci':
+                        result = fibonacci(input[0]);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateCalculus() {
+            const operation = document.getElementById('calculus-operation').value;
+            const input = document.getElementById('calculus-input').value;
+            const params = document.getElementById('calculus-params').value.split(',').map(Number);
+            const resultElement = document.getElementById('calculus-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'derivative':
+                        result = math.derivative(input, 'x').toString();
+                        break;
+                    case 'integral':
+                        result = math.integrate(input, 'x').toString();
+                        break;
+                    case 'definite-integral':
+                        result = math.integrate(math.parse(input), 'x', params[0], params[1]);
+                        break;
+                    case 'limit':
+                        result = math.limit(input, 'x', params[0]);
+                        break;
+                    case 'taylor-series':
+                        result = taylorSeries(input, params[0], params[1]).toString();
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, resultElement]);
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateLinearAlgebra() {
+            const operation = document.getElementById('linear-algebra-operation').value;
+            const input = document.getElementById('linear-algebra-input').value;
+            const resultElement = document.getElementById('linear-algebra-result');
+            try {
+                const matrix = math.matrix(input.split('\n').map(row => row.split(' ').map(Number)));
+                let result;
+                switch (operation) {
+                    case 'determinant':
+                        result = math.det(matrix);
+                        break;
+                    case 'inverse':
+                        result = math.inv(matrix);
+                        break;
+                    case 'eigenvalues':
+                        result = math.eigs(matrix).values;
+                        break;
+                    case 'eigenvectors':
+                        result = math.eigs(matrix).vectors;
+                        break;
+                    case 'rank':
+                        result = math.rank(matrix);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${math.format(result, {precision: 4})}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateStatistics() {
+            const operation = document.getElementById('statistics-operation').value;
+            const input = document.getElementById('statistics-input').value.split(',').map(Number);
+            const resultElement = document.getElementById('statistics-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'mean':
+                        result = math.mean(input);
+                        break;
+                    case 'median':
+                        result = math.median(input);
+                        break;
+                    case 'mode':
+                        result = math.mode(input);
+                        break;
+                    case 'standard-deviation':
+                        result = math.std(input);
+                        break;
+                    case 'correlation':
+                        const [set1, set2] = input.join(',').split(';').map(set => set.split(',').map(Number));
+                        result = math.correlation(set1, set2);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateGeometry() {
+            const operation = document.getElementById('geometry-operation').value;
+            const input = document.getElementById('geometry-input').value.split(',').map(Number);
+            const resultElement = document.getElementById('geometry-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'circle-area':
+                        result = math.pi * math.pow(input[0], 2);
+                        break;
+                    case 'sphere-volume':
+                        result = (4/3) * math.pi * math.pow(input[0], 3);
+                        break;
+                    case 'triangle-area':
+                        const [a, b, c] = input;
+                        const s = (a + b + c) / 2;
+                        result = math.sqrt(s * (s - a) * (s - b) * (s - c));
+                        break;
+                    case 'pythagorean-theorem':
+                        result = math.sqrt(math.pow(input[0], 2) + math.pow(input[1], 2));
+                        break;
+                    case 'distance-2d':
+                        result = math.distance([input[0], input[1]], [input[2], input[3]]);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateNumberTheory() {
+            const operation = document.getElementById('number-theory-operation').value;
+            const input = document.getElementById('number-theory-input').value.split(',').map(Number);
+            const resultElement = document.getElementById('number-theory-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'is-prime':
+                        result = isPrime(input[0]) ? 'Tak' : 'Nie';
+                        break;
+                    case 'prime-factors':
+                        result = primeFactors(input[0]).join(', ');
+                        break;
+                    case 'euler-totient':
+                        result = eulerTotient(input[0]);
+                        break;
+                    case 'modular-exponentiation':
+                        result = modularExponentiation(input[0], input[1], input[2]);
+                        break;
+                    case 'extended-euclidean':
+                        const [gcd, x, y] = extendedEuclidean(input[0], input[1]);
+                        result = `GCD: ${gcd}, x: ${x}, y: ${y}`;
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateCryptography() {
+            const operation = document.getElementById('cryptography-operation').value;
+            const input = document.getElementById('cryptography-input').value;
+            const key = document.getElementById('cryptography-key').value;
+            const resultElement = document.getElementById('cryptography-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'caesar-cipher':
+                        result = caesarCipher(input, parseInt(key));
+                        break;
+                    case 'vigenere-cipher':
+                        result = vigenereCipher(input, key);
+                        break;
+                    case 'rsa-encrypt':
+                        const { publicKey } = generateRSAKeys();
+                        result = rsaEncrypt(input, publicKey).join(',');
+                        break;
+                    case 'rsa-decrypt':
+                        const { privateKey } = generateRSAKeys();
+                        result = rsaDecrypt(input.split(',').map(Number), privateKey);
+                        break;
+                    case 'hash-md5':
+                        result = md5(input);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateDifferentialEquations() {
+            const operation = document.getElementById('differential-equations-operation').value;
+            const equation = document.getElementById('differential-equations-input').value;
+            const params = document.getElementById('differential-equations-params').value.split(',').map(Number);
+            const resultElement = document.getElementById('differential-equations-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'first-order-linear':
+                        result = solveFirstOrderLinear(equation, params[0], params[1], params[2]);
+                        break;
+                    case 'second-order-linear':
+                        result = solveSecondOrderLinear(equation, params[0], params[1], params[2], params[3], params[4]);
+                        break;
+                    case 'euler-method':
+                        result = eulerMethod(equation, params[0], params[1], params[2], params[3]);
+                        break;
+                    case 'runge-kutta':
+                        result = rungeKutta(equation, params[0], params[1], params[2], params[3]);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${JSON.stringify(result)}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateComplexNumbers() {
+            const operation = document.getElementById('complex-numbers-operation').value;
+            const input1 = document.getElementById('complex-numbers-input1').value;
+            const input2 = document.getElementById('complex-numbers-input2').value;
+            const resultElement = document.getElementById('complex-numbers-result');
+            try {
+                const complex1 = math.complex(input1);
+                const complex2 = math.complex(input2);
+                let result;
+                switch (operation) {
+                    case 'add':
+                        result = math.add(complex1, complex2);
+                        break;
+                    case 'subtract':
+                        result = math.subtract(complex1, complex2);
+                        break;
+                    case 'multiply':
+                        result = math.multiply(complex1, complex2);
+                        break;
+                    case 'divide':
+                        result = math.divide(complex1, complex2);
+                        break;
+                    case 'conjugate':
+                        result = math.conj(complex1);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result.toString()}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć';
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculateChemistry() {
+            const operation = document.getElementById('chemistry-operation').value;
+            const input = document.getElementById('chemistry-input').value;
+            const resultElement = document.getElementById('chemistry-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'solution-mixing':
+                        result = mixSolutions(input);
+                        break;
+                    case 'concentration-calculation':
+                        result = calculateConcentration(input);
+                        break;
+                    case 'molar-mass':
+                        result = calculateMolarMass(input);
+                        break;
+                    case 'stoichiometry':
+                        result = performStoichiometry(input);
+                        break;
+                    case 'ph-calculation':
+                        result = calculatePH(input);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć: ' + error.message;
+                resultElement.classList.add('error');
+            }
+        }
+
+        function calculatePhysics() {
+            const operation = document.getElementById('physics-operation').value;
+            const input = document.getElementById('physics-input').value;
+            const resultElement = document.getElementById('physics-result');
+            try {
+                let result;
+                switch (operation) {
+                    case 'kinematics':
+                        result = calculateKinematics(input);
+                        break;
+                    case 'dynamics':
+                        result = calculateDynamics(input);
+                        break;
+                    case 'energy':
+                        result = calculateEnergy(input);
+                        break;
+                    case 'thermodynamics':
+                        result = calculateThermodynamics(input);
+                        break;
+                    case 'electricity':
+                        result = calculateElectricity(input);
+                        break;
+                    case 'optics':
+                        result = calculateOptics(input);
+                        break;
+                    case 'waves':
+                        result = calculateWaves(input);
+                        break;
+                }
+                resultElement.innerText = `Wynik: ${result}`;
+                resultElement.classList.remove('error');
+            } catch (error) {
+                resultElement.innerText = 'Nie można obliczyć: ' + error.message;
+                resultElement.classList.add('error');
+            }
+        }
+
+        // Dodatkowe funkcje pomocnicze do obliczeń
+
+        function isPrime(n) {
+            if (n <= 1) return false;
+            for (let i = 2; i <= Math.sqrt(n); i++) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
+
+        function primeFactors(n) {
+            const factors = [];
+            let divisor = 2;
+            while (n > 1) {
+                if (n % divisor === 0) {
+                    factors.push(divisor);
+                    n /= divisor;
+                } else {
+                    divisor++;
+                }
+            }
+            return factors;
+        }
+
+        function fibonacci(n) {
+            if (n <= 1) return n;
+            let a = 0, b = 1;
+            for (let i = 2; i <= n; i++) {
+                [a, b] = [b, a + b];
+            }
+            return b;
+        }
+
+        function eulerTotient(n) {
+            let result = n;
+            for (let i = 2; i * i <= n; i++) {
+                if (n % i === 0) {
+                    while (n % i === 0) {
+                        n /= i;
+                    }
+                    result *= (1 - 1/i);
+                }
+            }
+            if (n > 1) {
+                result *= (1 - 1/n);
+            }
+            return Math.round(result);
+        }
+
+        function modularExponentiation(base, exponent, modulus) {
+            if (modulus === 1) return 0;
+            let result = 1;
+            base = base % modulus;
+            while (exponent > 0) {
+                if (exponent % 2 === 1) {
+                    result = (result * base) % modulus;
+                }
+                exponent = Math.floor(exponent / 2);
+                base = (base * base) % modulus;
+            }
+            return result;
+        }
+
+        function extendedEuclidean(a, b) {
+            if (a === 0) {
+                return [b, 0, 1];
+            } else {
+                const [gcd, x, y] = extendedEuclidean(b % a, a);
+                return [gcd, y - Math.floor(b / a) * x, x];
+            }
+        }
+
+        function caesarCipher(str, shift) {
+            return str.replace(/[a-z]/gi, letter => 
+                String.fromCharCode((letter.charCodeAt(0) - (letter.toLowerCase() < 'n' ? 97 : 65) + shift) % 26 
+                + (letter.toLowerCase() < 'n' ? 97 : 65))
+            );
+        }
+
+        function vigenereCipher(str, key) {
+            let result = '';
+            for (let i = 0; i < str.length; i++) {
+                const charCode = str.charCodeAt(i);
+                if (charCode >= 65 && charCode <= 90) {
+                    result += String.fromCharCode((charCode - 65 + key.charCodeAt(i % key.length) - 65) % 26 + 65);
+                } else if (charCode >= 97 && charCode <= 122) {
+                    result += String.fromCharCode((charCode - 97 + key.charCodeAt(i % key.length) - 97) % 26 + 97);
+                } else {
+                    result += str.charAt(i);
+                }
+            }
+            return result;
+        }
+
+        function md5(string) {
+            function leftRotate(value, shift) {
+                return (value << shift) | (value >>> (32 - shift));
+            }
+
+            function toHexString(num) {
+                let hex = "";
+                for (let i = 0; i < 4; i++) {
+                    hex += ((num >> (i * 8 + 4)) & 0xF).toString(16) +
+                           ((num >> (i * 8)) & 0xF).toString(16);
+                }
+                return hex;
+            }
+
+            const k = new Uint32Array([
+                0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
+                0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
+                0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
+                0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821,
+                0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa,
+                0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8,
+                0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed,
+                0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a,
+                0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c,
+                0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70,
+                0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05,
+                0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665,
+                0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
+                0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
+                0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
+                0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
+            ]);
+
+            const s = new Uint8Array([
+                7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+                5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
+                4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+                6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
+            ]);
+
+            let bytes = new TextEncoder().encode(string);
+            let wordArray = new Uint32Array(((bytes.length + 8) >> 6) + 1 << 4);
+
+            for (let i = 0; i < bytes.length; i++) {
+                wordArray[i >> 2] |= bytes[i] << ((i % 4) * 8);
+            }
+            wordArray[bytes.length >> 2] |= 0x80 << ((bytes.length % 4) * 8);
+            wordArray[wordArray.length - 2] = bytes.length * 8;
+
+            let a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
+
+            for (let i = 0; i < wordArray.length; i += 16) {
+                let oldA = a, oldB = b, oldC = c, oldD = d;
+
+                for (let j = 0; j < 64; j++) {
+                    let f, g;
+                    if (j < 16) {
+                        f = (b & c) | ((~b) & d);
+                        g = j;
+                    } else if (j < 32) {
+                        f = (d & b) | ((~d) & c);
+                        g = (5 * j + 1) % 16;
+                    } else if (j < 48) {
+                        f = b ^ c ^ d;
+                        g = (3 * j + 5) % 16;
+                    } else {
+                        f = c ^ (b | (~d));
+                        g = (7 * j) % 16;
+                    }
+                    let temp = d;
+                    d = c;
+                    c = b;
+                    b = b + leftRotate((a + f + k[j] + wordArray[i + g]), s[j]);
+                    a = temp;
+                }
+                a = (a + oldA) | 0;
+                b = (b + oldB) | 0;
+                c = (c + oldC) | 0;
+                d = (d + oldD) | 0;
+            }
+
+            return toHexString(a) + toHexString(b) + toHexString(c) + toHexString(d);
+        }
+
+        function rungeKutta(equation, x0, y0, xEnd, h) {
+            let x = x0;
+            let y = y0;
+            const results = [{x, y}];
+            const f = math.compile(equation);
+
+            while (x < xEnd) {
+                let k1 = h * f.evaluate({x: x, y: y});
+                let k2 = h * f.evaluate({x: x + h/2, y: y + k1/2});
+                let k3 = h * f.evaluate({x: x + h/2, y: y + k2/2});
+                let k4 = h * f.evaluate({x: x + h, y: y + k3});
+
+                y += (k1 + 2*k2 + 2*k3 + k4) / 6;
+                x += h;
+
+                results.push({x, y});
+            }
+
+            return results;
+        }
+
+        function generatePrime(min, max) {
+            function isPrime(n) {
+                for (let i = 2, s = Math.sqrt(n); i <= s; i++) {
+                    if (n % i === 0) return false;
+                }
+                return n > 1;
+            }
+
+            let prime;
+            do {
+                prime = Math.floor(Math.random() * (max - min + 1)) + min;
+            } while (!isPrime(prime));
+
+            return prime;
+        }
+
+        function modInverse(a, m) {
+            const [g, x] = extendedEuclidean(a, m);
+            if (g !== 1) {
+                throw new Error("Modular inverse does not exist");
+            }
+            return (x % m + m) % m;
+        }
+
+        function gaussianElimination(A, b) {
+            const n = A.length;
+            const augmentedMatrix = A.map((row, i) => [...row, b[i]]);
+
+            for (let i = 0; i < n; i++) {
+                // Znajdź pivot
+                let maxElement = Math.abs(augmentedMatrix[i][i]);
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(augmentedMatrix[k][i]) > maxElement) {
+                        maxElement = Math.abs(augmentedMatrix[k][i]);
+                        maxRow = k;
+                    }
+                }
+
+                // Zamień wiersze
+                [augmentedMatrix[i], augmentedMatrix[maxRow]] = [augmentedMatrix[maxRow], augmentedMatrix[i]];
+
+                // Eliminacja
+                for (let k = i + 1; k < n; k++) {
+                    const factor = augmentedMatrix[k][i] / augmentedMatrix[i][i];
+                    for (let j = i; j <= n; j++) {
+                        augmentedMatrix[k][j] -= factor * augmentedMatrix[i][j];
+                    }
+                }
+            }
+
+            // Wsteczne podstawianie
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                x[i] = augmentedMatrix[i][n] / augmentedMatrix[i][i];
+                for (let k = i - 1; k >= 0; k--) {
+                    augmentedMatrix[k][n] -= augmentedMatrix[k][i] * x[i];
+                }
+            }
+
+            return x;
+        }
+
+        function taylorSeries(func, x0, n) {
+            const f = math.parse(func);
+            let series = math.parse('0');
+            for (let i = 0; i <= n; i++) {
+                let term = math.derivative(f, 'x', i).evaluate({x: x0});
+                term = math.divide(term, math.factorial(i));
+                term = math.multiply(term, math.pow(math.subtract(math.symbol('x'), x0), i));
+                series = math.add(series, term);
+            }
+            return series.toString();
+        }
+
+        function solveFirstOrderLinear(equation, x0, y0, xEnd) {
+            const f = math.parse(equation);
+            const h = 0.1; // krok
+            let x = x0;
+            let y = y0;
+            const results = [{x, y}];
+
+            while (x < xEnd) {
+                const k1 = f.evaluate({x, y});
+                const k2 = f.evaluate({x: x + h/2, y: y + h/2 * k1});
+                const k3 = f.evaluate({x: x + h/2, y: y + h/2 * k2});
+                const k4 = f.evaluate({x: x + h, y: y + h * k3});
+
+                y += h/6 * (k1 + 2*k2 + 2*k3 + k4);
+                x += h;
+
+                results.push({x, y});
+            }
+
+            return results;
+        }
+
+        function solveSecondOrderLinear(equation, x0, y0, y1, xEnd, h) {
+            const f = math.parse(equation);
+            let x = x0;
+            let y = y0;
+            let yPrime = y1;
+            const results = [{x, y, yPrime}];
+
+            while (x < xEnd) {
+                const k1y = yPrime;
+                const k1yPrime = f.evaluate({x, y, 'y\'': yPrime});
+
+                const k2y = yPrime + h/2 * k1yPrime;
+                const k2yPrime = f.evaluate({x: x + h/2, y: y + h/2 * k1y, 'y\'': yPrime + h/2 * k1yPrime});
+
+                const k3y = yPrime + h/2 * k2yPrime;
+                const k3yPrime = f.evaluate({x: x + h/2, y: y + h/2 * k2y, 'y\'': yPrime + h/2 * k2yPrime});
+
+                const k4y = yPrime + h * k3yPrime;
+                const k4yPrime = f.evaluate({x: x + h, y: y + h * k3y, 'y\'': yPrime + h * k3yPrime});
+
+                y += h/6 * (k1y + 2*k2y + 2*k3y + k4y);
+                yPrime += h/6 * (k1yPrime + 2*k2yPrime + 2*k3yPrime + k4yPrime);
+                x += h;
+
+                results.push({x, y, yPrime});
+            }
+
+            return results;
+        }
+
+        function eulerMethod(equation, x0, y0, xEnd, h) {
+            const f = math.compile(equation);
+            let x = x0;
+            let y = y0;
+            const results = [{x, y}];
+
+            while (x < xEnd) {
+                y += h * f.evaluate({x, y});
+                x += h;
+                results.push({x, y});
+            }
+
+            return results;
+        }
+
+        function generateRSAKeys() {
+            function generatePrime(min, max) {
+                function isPrime(n) {
+                    for (let i = 2, s = Math.sqrt(n); i <= s; i++) {
+                        if (n % i === 0) return false;
+                    }
+                    return n > 1;
+                }
+
+                let prime;
+                do {
+                    prime = Math.floor(Math.random() * (max - min + 1)) + min;
+                } while (!isPrime(prime));
+
+                return prime;
+            }
+
+            function modInverse(a, m) {
+                const [g, x] = extendedEuclidean(a, m);
+                if (g !== 1) {
+                    throw new Error("Modular inverse does not exist");
+                }
+                return (x % m + m) % m;
+            }
+
+            const p = generatePrime(1000, 10000);
+            const q = generatePrime(1000, 10000);
+            const n = p * q;
+            const phi = (p - 1) * (q - 1);
+
+            let e = 65537; // Typowa wartość dla e
+            while (math.gcd(e, phi) !== 1) {
+                e++;
+            }
+
+            const d = modInverse(e, phi);
+
+            return {
+                publicKey: {e, n},
+                privateKey: {d, n}
+            };
+        }
+
+        function rsaEncrypt(message, publicKey) {
+            const {e, n} = publicKey;
+            return message.split('').map(char => 
+                modularExponentiation(char.charCodeAt(0), e, n)
+            );
+        }
+
+        function rsaDecrypt(ciphertext, privateKey) {
+            const {d, n} = privateKey;
+            return ciphertext.map(char => 
+                String.fromCharCode(modularExponentiation(char, d, n))
+            ).join('');
+        }
+
+        function mixSolutions(input) {
+            const [c1, v1, c2, v2] = input.split(',').map(Number);
+            const totalVolume = v1 + v2;
+            const finalConcentration = (c1 * v1 + c2 * v2) / totalVolume;
+            return `Stężenie końcowe: ${finalConcentration.toFixed(2)} mol/L, Objętość całkowita: ${totalVolume.toFixed(2)} L`;
+        }
+
+        function calculateConcentration(input) {
+            const [moles, volume] = input.split(',').map(Number);
+            const concentration = moles / volume;
+            return `Stężenie: ${concentration.toFixed(2)} mol/L`;
+        }
+
+        function calculateMolarMass(input) {
+            const elements = {
+                H: 1.008, He: 4.003, Li: 6.941, Be: 9.012, B: 10.811, C: 12.011, N: 14.007, O: 15.999, F: 18.998, Ne: 20.180,
+                Na: 22.990, Mg: 24.305, Al: 26.982, Si: 28.086, P: 30.974, S: 32.065, Cl: 35.453, Ar: 39.948, K: 39.098, Ca: 40.078,
+                // Dodaj więcej pierwiastków według potrzeb
+            };
+
+            let molarMass = 0;
+            const formula = input.match(/([A-Z][a-z]?)(\d*)/g);
+            
+            formula.forEach(part => {
+                const [, element, count] = part.match(/([A-Z][a-z]?)(\d*)/);
+                molarMass += elements[element] * (count ? parseInt(count) : 1);
+            });
+
+            return `Masa molowa: ${molarMass.toFixed(3)} g/mol`;
+        }
+
+        function performStoichiometry(input) {
+            const [reactant, product, givenMass] = input.split(',');
+            const reactantMass = calculateMolarMass(reactant);
+            const productMass = calculateMolarMass(product);
+            const ratio = parseFloat(productMass) / parseFloat(reactantMass);
+            const resultMass = parseFloat(givenMass) * ratio;
+            return `Masa produktu: ${resultMass.toFixed(2)} g`;
+        }
+
+        function calculatePH(input) {
+            const concentration = parseFloat(input);
+            const pH = -Math.log10(concentration);
+            return `pH: ${pH.toFixed(2)}`;
+        }
+
+        function balanceChemicalEquation(equation) {
+            // To jest uproszczona implementacja. Pełne zbalansowanie równania chemicznego
+            // jest złożonym problemem i wymaga zaawansowanych algorytmów.
+            // Ta funkcja obsługuje tylko proste równania.
+            const [reactants, products] = equation.split('->').map(side => side.trim().split('+').map(compound => compound.trim()));
+            
+            // Funkcja pomocnicza do liczenia atomów w związku
+            function countAtoms(compound) {
+                const atoms = {};
+                const regex = /([A-Z][a-z]?)(\d*)/g;
+                let match;
+                while ((match = regex.exec(compound)) !== null) {
+                    const [, element, count] = match;
+                    atoms[element] = (atoms[element] || 0) + (count ? parseInt(count) : 1);
+                }
+                return atoms;
+            }
+
+            // Liczymy atomy po obu stronach równania
+            const reactantAtoms = reactants.reduce((acc, compound) => {
+                const atoms = countAtoms(compound);
+                Object.keys(atoms).forEach(element => {
+                    acc[element] = (acc[element] || 0) + atoms[element];
+                });
+                return acc;
+            }, {});
+
+            const productAtoms = products.reduce((acc, compound) => {
+                const atoms = countAtoms(compound);
+                Object.keys(atoms).forEach(element => {
+                    acc[element] = (acc[element] || 0) + atoms[element];
+                });
+                return acc;
+            }, {});
+
+            // Sprawdzamy, czy równanie jest już zbalansowane
+            const isBalanced = Object.keys(reactantAtoms).every(element => reactantAtoms[element] === productAtoms[element]);
+
+            if (isBalanced) {
+                return "Równanie jest już zbalansowane: " + equation;
+            } else {
+                return "Równanie nie jest zbalansowane. Potrzebny bardziej zaawansowany algorytm do zbalansowania.";
+            }
+        }
+
+        function calculateEquilibriumConstant(concentrations) {
+            // Przykład: dla reakcji aA + bB <-> cC + dD
+            // Oczekiwany format wejściowy: "A:a:conc, B:b:conc, C:c:conc, D:d:conc"
+            const compounds = concentrations.split(',').map(compound => {
+                const [name, coefficient, concentration] = compound.trim().split(':');
+                return { name, coefficient: parseFloat(coefficient), concentration: parseFloat(concentration) };
+            });
+
+            const reactants = compounds.filter(compound => compound.coefficient < 0);
+            const products = compounds.filter(compound => compound.coefficient > 0);
+
+            const numerator = products.reduce((acc, product) => {
+                return acc * Math.pow(product.concentration, Math.abs(product.coefficient));
+            }, 1);
+
+            const denominator = reactants.reduce((acc, reactant) => {
+                return acc * Math.pow(reactant.concentration, Math.abs(reactant.coefficient));
+            }, 1);
+
+            const K = numerator / denominator;
+
+            return `Stała równowagi K = ${K.toExponential(4)}`;
+        }
+
+        function calculateKinematics(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'distance':
+                    const [velocity, time] = values.map(Number);
+                    return `Przebyta droga: ${(velocity * time).toFixed(2)} m`;
+                case 'acceleration':
+                    const [initialVelocity, finalVelocity, t] = values.map(Number);
+                    return `Przyspieszenie: ${((finalVelocity - initialVelocity) / t).toFixed(2)} m/s²`;
+                case 'free-fall':
+                    const height = Number(values[0]);
+                    const g = 9.81; // przyspieszenie ziemskie
+                    const fallTime = Math.sqrt((2 * height) / g);
+                    return `Czas spadania: ${fallTime.toFixed(2)} s`;
+                default:
+                    throw new Error('Nieznany typ obliczenia kinematycznego');
+            }
+        }
+
+        function calculateDynamics(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'force':
+                    const [mass, acceleration] = values.map(Number);
+                    return `Siła: ${(mass * acceleration).toFixed(2)} N`;
+                case 'momentum':
+                    const [m, velocity] = values.map(Number);
+                    return `Pęd: ${(m * velocity).toFixed(2)} kg⋅m/s`;
+                case 'work':
+                    const [force, distance] = values.map(Number);
+                    return `Praca: ${(force * distance).toFixed(2)} J`;
+                default:
+                    throw new Error('Nieznany typ obliczenia dynamicznego');
+            }
+        }
+
+        function calculateEnergy(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'kinetic':
+                    const [mass, velocity] = values.map(Number);
+                    return `Energia kinetyczna: ${(0.5 * mass * velocity ** 2).toFixed(2)} J`;
+                case 'potential':
+                    const [m, height] = values.map(Number);
+                    const g = 9.81; // przyspieszenie ziemskie
+                    return `Energia potencjalna: ${(m * g * height).toFixed(2)} J`;
+                case 'mechanical':
+                    const [kineticEnergy, potentialEnergy] = values.map(Number);
+                    return `Energia mechaniczna: ${(kineticEnergy + potentialEnergy).toFixed(2)} J`;
+                default:
+                    throw new Error('Nieznany typ obliczenia energii');
+            }
+        }
+
+        function calculateThermodynamics(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'heat':
+                    const [mass, specificHeat, temperatureChange] = values.map(Number);
+                    return `Ciepło: ${(mass * specificHeat * temperatureChange).toFixed(2)} J`;
+                case 'ideal-gas-law':
+                    const [pressure, volume, moles, temperature] = values.map(Number);
+                    const R = 8.314; // stała gazowa
+                    return `PV = nRT: ${(pressure * volume).toFixed(2)} = ${(moles * R * temperature).toFixed(2)}`;
+                default:
+                    throw new Error('Nieznany typ obliczenia termodynamicznego');
+            }
+        }
+
+        function calculateElectricity(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'ohms-law':
+                    const [voltage, resistance] = values.map(Number);
+                    return `Natężenie prądu: ${(voltage / resistance).toFixed(2)} A`;
+                case 'power':
+                    const [current, v] = values.map(Number);
+                    return `Moc: ${(current * v).toFixed(2)} W`;
+                case 'capacitance':
+                    const [charge, V] = values.map(Number);
+                    return `Pojemność: ${(charge / V).toFixed(2)} F`;
+                default:
+                    throw new Error('Nieznany typ obliczenia elektrycznego');
+            }
+        }
+
+        function calculateOptics(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'lens':
+                    const [objectDistance, imageDistance] = values.map(Number);
+                    const focalLength = 1 / ((1 / objectDistance) + (1 / imageDistance));
+                    return `Ogniskowa soczewki: ${focalLength.toFixed(2)} m`;
+                case 'snells-law':
+                    const [n1, angle1, n2] = values.map(Number);
+                    const angle2 = Math.asin((n1 / n2) * Math.sin(angle1 * Math.PI / 180)) * 180 / Math.PI;
+                    return `Kąt załamania: ${angle2.toFixed(2)}°`;
+                default:
+                    throw new Error('Nieznany typ obliczenia optycznego');
+            }
+        }
+
+        function calculateWaves(input) {
+            const [type, ...values] = input.split(',');
+            switch (type) {
+                case 'wave-speed':
+                    const [frequency, wavelength] = values.map(Number);
+                    return `Prędkość fali: ${(frequency * wavelength).toFixed(2)} m/s`;
+                case 'doppler-effect':
+                    const [sourceFrequency, sourceVelocity, observerVelocity] = values.map(Number);
+                    const c = 343; // prędkość dźwięku w powietrzu
+                    const observedFrequency = sourceFrequency * ((c + observerVelocity) / (c - sourceVelocity));
+                    return `Obserwowana częstotliwość: ${observedFrequency.toFixed(2)} Hz`;
+                default:
+                    throw new Error('Nieznany typ obliczenia falowego');
+            }
+        }
+
+        function calculateRelativity(input) {
+            const [type, ...values] = input.split(',');
+            const c = 299792458; // prędkość światła w próżni
+            switch (type) {
+                case 'time-dilation':
+                    const [properTime, velocity] = values.map(Number);
+                    const dilatedTime = properTime / Math.sqrt(1 - (velocity ** 2 / c ** 2));
+                    return `Czas dylatowany: ${dilatedTime.toFixed(6)} s`;
+                case 'length-contraction':
+                    const [properLength, v] = values.map(Number);
+                    const contractedLength = properLength * Math.sqrt(1 - (v ** 2 / c ** 2));
+                    return `Długość skontraktowana: ${contractedLength.toFixed(6)} m`;
+                case 'mass-energy':
+                    const mass = Number(values[0]);
+                    return `Energia: ${(mass * c ** 2).toExponential(4)} J`;
+                default:
+                    throw new Error('Nieznany typ obliczenia relatywistycznego');
+            }
+        }
+
+        function calculateQuantumPhysics(input) {
+            const [type, ...values] = input.split(',');
+            const h = 6.62607015e-34; // stała Plancka
+            switch (type) {
+                case 'photoelectric-effect':
+                    const [frequency, workFunction] = values.map(Number);
+                    const kineticEnergy = h * frequency - workFunction;
+                    return `Energia kinetyczna wyemitowanego elektronu: ${kineticEnergy.toExponential(4)} J`;
+                case 'de-broglie-wavelength':
+                    const [mass, velocity] = values.map(Number);
+                    const wavelength = h / (mass * velocity);
+                    return `Długość fali de Broglie'a: ${wavelength.toExponential(4)} m`;
+                default:
+                    throw new Error('Nieznany typ obliczenia kwantowego');
+            }
+        }
+
+        function calculateAstrophysics(input) {
+            const [type, ...values] = input.split(',');
+            const G = 6.67430e-11; // stała grawitacyjna
+            switch (type) {
+                case 'escape-velocity':
+                    const [mass, radius] = values.map(Number);
+                    const escapeVelocity = Math.sqrt((2 * G * mass) / radius);
+                    return `Prędkość ucieczki: ${escapeVelocity.toFixed(2)} m/s`;
+                case 'orbital-period':
+                    const [M, r] = values.map(Number);
+                    const period = 2 * Math.PI * Math.sqrt((r ** 3) / (G * M));
+                    return `Okres orbitalny: ${period.toFixed(2)} s`;
+                default:
+                    throw new Error('Nieznany typ obliczenia astrofizycznego');
+            }
+        }
+    </script>
+</body>
+</html>
