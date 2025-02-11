@@ -10,10 +10,6 @@ A lightweight, browser-based application for editing PDF files, including compre
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Dependencies](#dependencies)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
@@ -73,4 +69,21 @@ To run locally:
    ```
 
    Then visit [http://localhost:8000](http://localhost:8000) in your browser.
+
+---
+
+## Usage
+
+### Open the Application:
+Run `index.html` in your browser.
+
+### Choose a Function:
+
+- **Compress a PDF:** Upload a file, adjust the compression level, and download the optimized version.
+- **Remove Pages:** Select pages to delete from your PDF and save the edited version.
+- **Merge PDFs:** Upload multiple PDF files and merge them into one.
+- **Convert Images to PDF:** Drag and drop image files to generate a PDF.
+
+### Download the Edited PDF:
+Once modifications are complete, save the file to your device.
 
