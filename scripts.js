@@ -70,7 +70,7 @@ function updateMergeFileList() {
         li.textContent = file.name;
         mergeFileList.appendChild(li);
     });
-    mergeButton.disabled = mergeFiles.length < 2;
+    mergeButton.disabled = mergeFiles.length < 1;
     errorMessage.textContent = '';
 }
 
@@ -92,6 +92,7 @@ async function updatePdfInfo() {
 async function mergePDFs() {
     try {
         errorMessage.textContent = '';
+        if (!mergeFiles.length) throw new Error('Select at least one file');
         const pdfDoc = await PDFLib.PDFDocument.create();
 
         for (const file of mergeFiles) {
@@ -108,6 +109,7 @@ async function mergePDFs() {
                 } else if (file.type === 'image/png') {
                     image = await pdfDoc.embedPng(imageBytes);
                 }
+                if (!image) throw new Error('Only PNG and JPEG images are supported');
                 const { width, height } = image.scale(1);
                 const page = pdfDoc.addPage([width, height]);
                 page.drawImage(image, {
@@ -143,6 +145,7 @@ async function removePageFromPDF() {
             throw new Error('Page number exceeds the number of pages in the document');
         }
 
+        if (pageCount === 1) throw new Error('The document must retain at least one page');
         pdfDoc.removePage(pageToRemove - 1);
 
         const pdfBytes = await pdfDoc.save();
@@ -160,6 +163,12 @@ async function convertPDF() {
         const arrayBuffer = await convertPdfFile.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
         const page = await pdf.getPage(1);
+        if (format === 'txt') {
+            const textContent = await page.getTextContent();
+            const text = textContent.items.map(item => item.str).join(' ');
+            download(new Blob([text], {type: 'text/plain'}), 'converted_document.txt', 'text/plain');
+            return;
+        }
         const scale = 1.5;
         const viewport = page.getViewport({scale: scale});
         const canvas = document.createElement('canvas');
@@ -172,11 +181,6 @@ async function convertPDF() {
         if (format === 'jpg' || format === 'png') {
             result = canvas.toDataURL(`image/${format}`);
             download(result, `converted_document.${format}`, `image/${format}`);
-        } else if (format === 'doc') {
-            const textContent = await page.getTextContent();
-            const text = textContent.items.map(item => item.str).join(' ');
-            const blob = new Blob([text], {type: 'text/plain'});
-            download(blob, "converted_document.txt", "text/plain");
         }
     } catch (error) {
         console.error('Error:', error);
@@ -187,63 +191,17 @@ async function convertPDF() {
 async function compressPDF() {
     try {
         errorMessage.textContent = '';
-        const level = compressLevelSelect.value;
-        const arrayBuffer = await compressPdfFile.arrayBuffer();
-        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-
-        pdfDoc.setTitle('');
-        pdfDoc.setAuthor('');
-        pdfDoc.setSubject('');
-        pdfDoc.setKeywords([]);
-        pdfDoc.setProducer('');
-        pdfDoc.setCreator('');
-
-        let compressionFactor;
-        switch (level) {
-            case 'low':
-                compressionFactor = 0.9;
-                break;
-            case 'medium':
-                compressionFactor = 0.7;
-                break;
-            case 'high':
-                compressionFactor = 0.5;
-                break;
-            default:
-                compressionFactor = 0.8;
-        }
-
-        const pages = pdfDoc.getPages();
-        for (const page of pages) {
-            const { width, height } = page.getSize();
-            page.setSize(width * compressionFactor, height * compressionFactor);
-        }
-
-        const pdfBytes = await pdfDoc.save();
-        download(pdfBytes, "compressed_document.pdf", "application/pdf");
-
-        const originalSize = arrayBuffer.byteLength;
-        const compressedSize = pdfBytes.byteLength;
-        const compressionRatio = ((originalSize - compressedSize) / originalSize * 100).toFixed(2);
-
-        errorMessage.textContent = `File compressed. Size reduction: ${compressionRatio}%`;
+        const original = await compressPdfFile.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(original, {updateMetadata: false});
+        const optimized = await pdfDoc.save({useObjectStreams: true, updateFieldAppearances: false});
+        // Preserve page geometry, content and metadata; never export a larger file.
+        const smaller = optimized.byteLength < original.byteLength;
+        download(smaller ? optimized : original, 'optimized_document.pdf', 'application/pdf');
+        errorMessage.textContent = smaller
+            ? `Lossless optimization reduced the file by ${((1 - optimized.byteLength / original.byteLength) * 100).toFixed(2)}%.`
+            : 'No smaller lossless result was found; the original file was preserved.';
     } catch (error) {
         console.error('Error:', error);
-        errorMessage.textContent = 'An error occurred while compressing the file. Please try again.';
+        errorMessage.textContent = 'Unable to optimize this PDF.';
     }
 }
-
-// Cookie Consent Banner Script
-document.addEventListener('DOMContentLoaded', function() {
-    var cookieConsent = document.getElementById('cookieConsent');
-    var acceptCookies = document.getElementById('acceptCookies');
-
-    if (!localStorage.getItem('cookiesAccepted')) {
-        cookieConsent.style.display = 'block';
-    }
-
-    acceptCookies.addEventListener('click', function() {
-        localStorage.setItem('cookiesAccepted', 'true');
-        cookieConsent.style.display = 'none';
-    });
-});

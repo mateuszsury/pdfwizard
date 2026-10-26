@@ -1,89 +1,33 @@
 # PDFWizard
 
-A lightweight, browser-based application for editing PDF files, including compression, page removal, merging, and image-to-PDF conversion. Built using HTML, JavaScript, and modern web APIs.
+Browser-side PDF tools maintained by Mateusz Sury: merge PDFs and PNG/JPEG
+images, remove a selected page, export the first PDF page to an image or plain
+text, and attempt lossless structural optimization.
 
----
+```sh
+python -m http.server 8000
+# Open http://localhost:8000
+```
 
-## Table of Contents
+Files are processed locally by the application. PDF libraries are fetched from
+versioned public CDNs; internet access is required for those initial assets.
+PDF-to-TXT is text extraction, not a Word document converter. Image/text exports
+currently process the first page only. Lossless optimization preserves page
+dimensions and metadata and keeps the original when no smaller result is found;
+it does not downsample embedded images or promise a reduction for every PDF.
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
+## Development checks
 
----
+```sh
+npm ci
+npm test
+node --check scripts.js
+```
 
-## Introduction
+Tests use the real pdf-lib engine for merging, image embedding, page removal and
+lossless optimization. The TXT UI path uses a text-extraction stub; tests do not
+claim browser canvas rendering or full PDF.js compatibility. Retain document
+backups and verify output before replacing an original file.
 
-**PDFWizard** is a fully client-side web application designed for quick and secure PDF editing. It runs entirely in the browser without requiring any server-side processing, ensuring privacy and efficiency. The application provides essential PDF tools such as compression, merging, splitting, and image-to-PDF conversion.
-
----
-
-## Features
-
-- **PDF Compression:**  
-  Reduce the file size of PDFs while maintaining readability.
-
-- **Page Removal:**  
-  Delete unwanted pages from a PDF document.
-
-- **Merge PDFs:**  
-  Combine multiple PDFs into a single file.
-
-- **Convert Images to PDF:**  
-  Upload images (JPG, PNG) and convert them into a single PDF document.
-
-- **Client-Side Processing:**  
-  No file uploads—everything happens in your browser for security and speed.
-
-- **Simple UI:**  
-  Intuitive drag-and-drop interface for easy file manipulation.
-
----
-
-## Installation
-
-PDFWizard is a static web application, so no installation is required. You can use it by simply opening the `index.html` file in your browser.
-
-To run locally:
-
-1. **Clone the Repository:**
-
-   ```bash
-   git clone https://github.com/mateuszsury/pdfwizard.git
-   ```
-
-2. **Navigate to the Project Directory:**
-
-   ```bash
-   cd pdfwizard
-   ```
-
-3. **Open in a Browser:**  
-   Simply open `index.html` in your preferred web browser.
-
-   Alternatively, you can host it on a local server using Python:
-
-   ```bash
-   python -m http.server 8000
-   ```
-
-   Then visit [http://localhost:8000](http://localhost:8000) in your browser.
-
----
-
-## Usage
-
-### Open the Application:
-Run `index.html` in your browser.
-
-### Choose a Function:
-
-- **Compress a PDF:** Upload a file, adjust the compression level, and download the optimized version.
-- **Remove Pages:** Select pages to delete from your PDF and save the edited version.
-- **Merge PDFs:** Upload multiple PDF files and merge them into one.
-- **Convert Images to PDF:** Drag and drop image files to generate a PDF.
-
-### Download the Edited PDF:
-Once modifications are complete, save the file to your device.
-
+Original code is MIT licensed. pdf-lib, PDF.js and download.js retain their own
+licenses; third-party dependencies are not attributed to the maintainer.
