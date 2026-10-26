@@ -1,0 +1,12 @@
+{
+  "name": "pdfwizard",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  },
+  "devDependencies": {
+    "pdf-lib": "1.17.1"
+  }
+}
