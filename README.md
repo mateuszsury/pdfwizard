@@ -16,6 +16,21 @@ currently process the first page only. Lossless optimization preserves page
 dimensions and metadata and keeps the original when no smaller result is found;
 it does not downsample embedded images or promise a reduction for every PDF.
 
+## Project overview
+
+Browser-based PDF merging, page removal, conversion and lossless document saving.
+
+![PDF Wizard — Processing takes place in the browser. Lossless saving preserves content and may leave file size unchanged.](docs/assets/presentation/overview.svg)
+
+Processing takes place in the browser. Lossless saving preserves content and may leave file size unchanged.
+
+### Interface preview
+
+![pdfwizard interface preview](docs/assets/presentation/interface-preview.png)
+
+Browser interface; no user document is loaded. PDF processing is local to the browser.
+
+
 ## Development checks
 
 ```sh
